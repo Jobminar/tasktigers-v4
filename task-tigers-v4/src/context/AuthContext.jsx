@@ -39,6 +39,8 @@ export const AuthProvider = ({ children }) => {
   const compressedPhoneRef = LZString.compress(phoneRef);
   sessionStorage.setItem("compressedPhone", compressedPhoneRef);
   const otpRef = useRef(null);
+  const [hasValidPackage, setHasValidPackage] = useState(false);
+  const [hasMembership, setHasMembership] = useState(false);
   //fetching user location---------------------------------------------------
   const fetchCityName = async (latitude, longitude) => {
     try {
@@ -336,6 +338,8 @@ export const AuthProvider = ({ children }) => {
         fetchCityName,
         setUserLocation,
         updateUserLocation,
+        hasMembership,
+        setHasMembership,
         login,
         isAuthenticated,
         sendOtp,
@@ -343,6 +347,8 @@ export const AuthProvider = ({ children }) => {
         googleUser,
         logout,
         fetchUserInfo,
+        hasValidPackage,
+        setHasValidPackage,
         verifyOtp,
         phoneRef,
         otpRef,

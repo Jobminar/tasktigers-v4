@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import "./CurrentPackage.css"; // Add styles for your current package card
+import { useAuth } from "../../../context/AuthContext"; // Import useAuth
 
 const CurrentPackage = ({ userId }) => {
   console.log("the current userId", userId);
   const [currentPackage, setCurrentPackage] = useState(null); // Store the user's current package
   const [loading, setLoading] = useState(false); // Track loading state
+  const { setHasMembership } = useAuth(); // Access setHasMembership from AuthContext
 
   // Fetch the user's current package
   useEffect(() => {
@@ -26,20 +28,26 @@ const CurrentPackage = ({ userId }) => {
           if (Array.isArray(data) && data.length > 0) {
             console.log("Setting the current package from array:", data[0]);
             setCurrentPackage(data[0]); // If API returns an array, use the first item
+            setHasMembership(new Date(data[0].expiryDate) > new Date()); // Update hasMembership based on expiry date
           } else if (data && typeof data === "object" && data._id) {
             console.log("Setting the current package from object:", data);
             setCurrentPackage(data); // If API returns a single object, use it
+            setHasMembership(new Date(data.expiryDate) > new Date()); // Update hasMembership based on expiry date
           } else {
             console.log("No valid package data found.");
             setCurrentPackage(null); // No package found
+            setHasMembership(false); // Set hasMembership to false
           }
         } else {
           console.error("Error in API response:", data);
           setCurrentPackage(null);
+          setHasMembership(false); // Set hasMembership to false
           toast.error("Failed to fetch current package.");
         }
       } catch (err) {
         console.error("Error fetching package:", err);
+        setCurrentPackage(null);
+        setHasMembership(false); // Set hasMembership to false
         toast.error("Failed to fetch current package.");
       } finally {
         setLoading(false);
@@ -47,7 +55,7 @@ const CurrentPackage = ({ userId }) => {
     };
 
     fetchUserPackage();
-  }, [userId]);
+  }, [userId, setHasMembership]); // Include setHasMembership in the dependency array
 
   if (loading) {
     return <p>Loading current package...</p>;

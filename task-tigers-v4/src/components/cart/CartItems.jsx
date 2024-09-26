@@ -23,7 +23,7 @@ const CartItems = ({ onNext }) => {
                   item.serviceId?.name || "Service Name Unavailable";
                 const serviceVariant = item.serviceId?.serviceVariants?.[0];
                 const serviceTime = serviceVariant?.serviceTime || "N/A";
-                const price = serviceVariant?.price || 0;
+                const price = item.price || serviceVariant?.price || 0; // Use the stored priceToUse
 
                 return (
                   <div key={item._id} className="cart-item">
@@ -37,7 +37,8 @@ const CartItems = ({ onNext }) => {
                     </div>
                     <div className="item-actions">
                       <div className="item-action-top">
-                        <p className="item-price">₹{price}</p>
+                        <p className="item-price">₹{price}</p>{" "}
+                        {/* Display the stored price */}
                         <button
                           className="delete-btn"
                           onClick={() => removeFromCart(item._id)}
@@ -52,6 +53,7 @@ const CartItems = ({ onNext }) => {
                             updateQuantity(
                               item._id,
                               Math.max(1, item.quantity - 1),
+                              item.price / item.quantity, // Pass unit price for the update
                             )
                           }
                         >
@@ -64,6 +66,7 @@ const CartItems = ({ onNext }) => {
                             updateQuantity(
                               item._id,
                               Math.min(4, item.quantity + 1),
+                              item.price / item.quantity, // Pass unit price for the update
                             )
                           }
                         >

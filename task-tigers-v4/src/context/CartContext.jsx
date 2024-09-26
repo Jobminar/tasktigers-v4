@@ -36,14 +36,14 @@ export const CartProvider = ({ children, cartId, showLogin }) => {
         acc +
         (Array.isArray(cart.items) ? cart.items : []).reduce(
           (subTotal, item) => {
-            const price = item.serviceId?.serviceVariants?.[0]?.price || 0;
-            return subTotal + price * item.quantity;
+            const price = item.price || 0; // Use item's price directly
+            return subTotal + price;
           },
           0,
         ),
       0,
     );
-    console.log("Total price calculated:", total); // Log total price calculation
+    console.log("Updated total price:", total); // Log total price calculation
     setTotalPrice(total);
   }, []);
 
@@ -55,7 +55,7 @@ export const CartProvider = ({ children, cartId, showLogin }) => {
       (acc, cart) => acc + (Array.isArray(cart.items) ? cart.items.length : 0),
       0,
     );
-    console.log("Total items calculated:", total); // Log total items calculation
+    console.log("Updated total items count:", total); // Log total items calculation
     setTotalItems(total);
   }, []);
 
@@ -65,7 +65,7 @@ export const CartProvider = ({ children, cartId, showLogin }) => {
   const fetchCart = useCallback(async () => {
     const userId = user?._id || sessionStorage.getItem("userId");
     if (!userId) {
-      console.warn("fetchCart: user or userId is undefined"); // Log missing userId
+      console.warn("fetchCart: user or userId is undefined");
       return;
     }
 
@@ -88,12 +88,16 @@ export const CartProvider = ({ children, cartId, showLogin }) => {
       const data = await response.json();
       setCartItems(Array.isArray(data) ? data : []);
       setCartNotFound(false);
-      console.log("Cart data fetched successfully:", data); // Log successful cart data fetching
+      console.log("Cart data fetched successfully:", data);
+
+      // Update totals after fetching the cart
+      calculateTotalPrice(data);
+      calculateTotalItems(data);
     } catch (err) {
-      console.error("Failed to fetch cart data:", err); // Log error in fetching cart data
+      console.error("Failed to fetch cart data:", err);
       toast.error("Failed to fetch cart data");
     }
-  }, [user]);
+  }, [user, calculateTotalPrice, calculateTotalItems]);
 
   // Fetch cart on mount or when user/cartId changes
   useEffect(() => {
@@ -105,7 +109,7 @@ export const CartProvider = ({ children, cartId, showLogin }) => {
 
   // Recalculate total price and items when cartItems changes
   useEffect(() => {
-    console.log("Cart items changed, recalculating totals."); // Log when cart items are updated
+    console.log("Cart items changed, recalculating totals.");
     calculateTotalPrice(cartItems);
     calculateTotalItems(cartItems);
   }, [cartItems, calculateTotalPrice, calculateTotalItems]);
@@ -138,11 +142,11 @@ export const CartProvider = ({ children, cartId, showLogin }) => {
         await fetchCart(); // Refetch cart after adding the item
         toast.success("Item added to cart");
       } else {
-        console.error("Failed to add item to cart:", response.statusText); // Log error in adding item to cart
+        console.error("Failed to add item to cart:", response.statusText);
         toast.error("Failed to add item to cart");
       }
     } catch (error) {
-      console.error("Error adding item to cart:", error); // Log error in adding item
+      console.error("Error adding item to cart:", error);
       toast.error("Error adding item to cart");
     }
   };
@@ -150,25 +154,38 @@ export const CartProvider = ({ children, cartId, showLogin }) => {
   /**
    * Function to handle adding a service to the cart
    */
-  const handleCart = async (serviceId, categoryId, subCategoryId) => {
+  const handleCart = async (
+    serviceId,
+    categoryId,
+    subCategoryId,
+    priceToUse,
+  ) => {
     const userId = user?._id || sessionStorage.getItem("userId");
 
     console.log("Attempting to handle cart for service:", {
       serviceId,
       categoryId,
       subCategoryId,
+      priceToUse,
     });
 
     if (!userId) {
       toast.error("User not authenticated");
-      console.warn("User not authenticated. Showing login prompt.");
       showLogin && showLogin(true);
       return;
     }
 
     const newItem = {
       userId,
-      items: [{ serviceId, categoryId, subCategoryId, quantity: 1 }],
+      items: [
+        {
+          serviceId,
+          categoryId,
+          subCategoryId,
+          quantity: 1,
+          price: priceToUse,
+        },
+      ],
     };
 
     await addToCart(newItem);
@@ -208,12 +225,12 @@ export const CartProvider = ({ children, cartId, showLogin }) => {
           );
           toast.success("Item removed from cart");
         } else {
-          console.error("Error deleting cart item:", response.statusText); // Log error in deleting cart item
+          console.error("Error deleting cart item:", response.statusText);
           toast.error("Error deleting cart item");
         }
       })
       .catch((error) => {
-        console.error("Error deleting cart item:", error); // Log error during deletion
+        console.error("Error deleting cart item:", error);
         toast.error("Error deleting cart item");
       })
       .finally(() => setItemIdToRemove(null)); // Reset the itemIdToRemove state
@@ -222,16 +239,27 @@ export const CartProvider = ({ children, cartId, showLogin }) => {
   /**
    * Function to update the quantity of an item in the cart
    */
-  const updateQuantity = (itemId, newQuantity) => {
+  const updateQuantity = (itemId, newQuantity, unitPrice) => {
     console.log("Updating quantity for item:", { itemId, newQuantity });
+
     setCartItems((prevItems) =>
       prevItems.map((cart) => ({
         ...cart,
         items: cart.items.map((item) =>
-          item._id === itemId ? { ...item, quantity: newQuantity } : item,
+          item._id === itemId
+            ? {
+                ...item,
+                quantity: newQuantity,
+                price: unitPrice * newQuantity,
+              }
+            : item,
         ),
       })),
     );
+
+    // Recalculate totals after quantity update
+    calculateTotalPrice(cartItems);
+    calculateTotalItems(cartItems);
   };
 
   /**
@@ -241,7 +269,7 @@ export const CartProvider = ({ children, cartId, showLogin }) => {
     const userId = sessionStorage.getItem("userId");
 
     if (!userId) {
-      console.warn("No user ID found. Cannot clear the cart."); // Log if no userId is found
+      console.warn("No user ID found. Cannot clear the cart.");
       return;
     }
 
@@ -255,16 +283,16 @@ export const CartProvider = ({ children, cartId, showLogin }) => {
       if (response.ok) {
         setCartItems([]);
         toast.success("Cart cleared successfully.");
-        console.log("Cart cleared successfully."); // Log successful cart clearance
+        console.log("Cart cleared successfully.");
       } else {
-        const errorMessage = await response.text(); // Get error message from the response
+        const errorMessage = await response.text();
         console.error(`Failed to clear cart: ${errorMessage}`);
         toast.error(
           `Error clearing the cart: ${response.status} ${response.statusText}`,
         );
       }
     } catch (error) {
-      console.error("Error clearing the cart:", error); // Log error during cart clearance
+      console.error("Error clearing the cart:", error);
       toast.error(`Error clearing the cart: ${error.message}`);
     }
   };
@@ -273,43 +301,36 @@ export const CartProvider = ({ children, cartId, showLogin }) => {
    * Function to store pincode in compressed format
    */
   const storePincode = (pincode) => {
-    const compressedPincode = LZString.compress(pincode); // Compress the pincode
-    localStorage.setItem("userPincode", compressedPincode); // Store in localStorage
-    console.log(`Stored compressed pincode: ${compressedPincode}`); // Log compressed pincode
+    const compressedPincode = LZString.compress(pincode);
+    localStorage.setItem("userPincode", compressedPincode);
+    console.log(`Stored compressed pincode: ${compressedPincode}`);
   };
 
   /**
    * Function to handle location update and clear cart if necessary
    */
   const handleLocationUpdate = async (latitude, longitude, pincode) => {
-    const storedPincode = getStoredPincode(); // Get the stored pincode from local storage
-    const selectedPincode = String(pincode); // Convert the user-selected pincode to a string
+    const storedPincode = getStoredPincode();
+    const selectedPincode = String(pincode);
 
     console.log(`Pincode user chose: ${selectedPincode}`);
     console.log(`Stored pincode: ${storedPincode}`);
 
-    // Check if the chosen pincode and stored pincode are the same
     if (storedPincode === selectedPincode) {
       console.log(
         "Pincode matches. Skipping location update and cart clearing.",
       );
-      toast.success("Good! Schedule your services."); // Show success message
+      toast.success("Good! Schedule your services.");
       return;
     } else {
       console.log(
         `Updating location. Latitude: ${latitude}, Longitude: ${longitude}, Pincode: ${selectedPincode}`,
       );
       console.log("Clearing cart.");
-      clearCart(); // Clear the cart when the location changes
-
-      // Call updateUserLocation from AuthContext
+      clearCart();
       await updateUserLocation(latitude, longitude);
-
-      // Store the new pincode after the cart is cleared and location updated
-      storePincode(selectedPincode); // Use storePincode to save the new pincode
+      storePincode(selectedPincode);
       console.log(`New pincode stored: ${selectedPincode}`);
-
-      // Optionally, show a toast message indicating the cart was cleared
       toast.success(
         "Location updated, cart cleared. You can now schedule your services.",
       );
@@ -321,12 +342,11 @@ export const CartProvider = ({ children, cartId, showLogin }) => {
     console.log("Initiating order creation...");
 
     try {
-      // Prepare the request body with the total price and user information
       const orderData = {
-        amount: totalPrice * 100, // Total price in paise (Razorpay uses smallest currency unit)
+        amount: totalPrice * 100,
         currency: "INR",
-        receipt: `Task-tigers_${Date.now()}`, // Random receipt string with timestamp
-        userId: user?._id, // Optional: Include userId if needed
+        receipt: `Task-tigers_${Date.now()}`,
+        userId: user?._id,
         notes: {
           note1: "Order for Task Tigers",
           note2: "Additional details here",
@@ -335,9 +355,8 @@ export const CartProvider = ({ children, cartId, showLogin }) => {
 
       console.log("Order data to be sent:", orderData);
 
-      // Make API request to /create-order
       const response = await fetch(
-        "http://13.126.118.3:3000/v1.0/orders/create-order", // Replace with your actual API endpoint
+        "http://13.126.118.3:3000/v1.0/orders/create-order",
         {
           method: "POST",
           headers: {
@@ -347,20 +366,16 @@ export const CartProvider = ({ children, cartId, showLogin }) => {
         },
       );
 
-      // Check if the response was successful
       if (!response.ok) {
         throw new Error(`Failed to create order: ${response.statusText}`);
       }
 
-      // Parse the response
       const orderResponse = await response.json();
       console.log("Order created successfully:", orderResponse);
 
-      // Extract the order ID from the response
-      const orderId = orderResponse.id; // Assuming response contains an "id" field
+      const orderId = orderResponse.id;
       console.log("Extracted order ID:", orderId);
 
-      // Return the order ID for further usage in Razorpay
       return orderId;
     } catch (error) {
       console.error("Error creating order:", error);
@@ -381,6 +396,7 @@ export const CartProvider = ({ children, cartId, showLogin }) => {
         handleCart,
         cartMessage,
         handleLocationUpdate,
+        createOrder,
       }}
     >
       {cartNotFound && <div>{cartMessage}</div>}

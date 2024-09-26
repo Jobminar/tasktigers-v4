@@ -1,6 +1,5 @@
 import React, { useState, useContext, useEffect, useRef, useMemo } from "react";
 import ReactDOM from "react-dom";
-
 import "./Services.css";
 import ScrollableTabs from "./ScrollableTabs";
 import offerbadge from "../../assets/images/offer.svg";
@@ -28,8 +27,7 @@ const Services = () => {
 
   const { customPriceData } = useLocationPrice();
   const { handleCart } = useContext(CartContext);
-  const { isAuthenticated } = useAuth();
-
+  const { isAuthenticated, hasMembership } = useAuth();
   const [descriptionVisibility, setDescriptionVisibility] = useState({});
   const [isLoginVisible, setLoginVisible] = useState(false);
   const [variantName, setVariantName] = useState(""); // Track selected variant
@@ -43,7 +41,9 @@ const Services = () => {
   const [membershipPrice, setMembershipPrice] = useState("");
 
   const initialCategoryRef = useRef(null);
-
+  useEffect(() => {
+    console.log("Has membership status:", hasMembership);
+  }, [hasMembership]);
   // pricing functionality
 
   useEffect(() => {
@@ -174,13 +174,23 @@ const Services = () => {
   };
 
   // Handle Add to Cart functionality with login check
-  const handleAddToCart = (serviceId, categoryId, subCategoryId) => {
+  const handleAddToCart = (
+    serviceId,
+    categoryId,
+    subCategoryId,
+    priceToUse,
+  ) => {
     console.log("Handling Add to Cart for service: ", serviceId);
+    console.log(`Price to use for cart: ${priceToUse}`);
+
+    // Check if the user is authenticated
     if (!isAuthenticated) {
       setLoginVisible(true);
       return;
     }
-    handleCart(serviceId, categoryId, subCategoryId);
+
+    // Call handleCart with the determined priceToUse
+    handleCart(serviceId, categoryId, subCategoryId, priceToUse);
   };
 
   const closeModal = () => {
@@ -210,6 +220,7 @@ const Services = () => {
   // Display matched services or error message inside "services-display" div
   const displayServices = (matchedData) => {
     console.log(matchedData, "Displaying services in service page function");
+
     if (
       !selectedSubCategoryId ||
       !Array.isArray(matchedData) ||
@@ -218,13 +229,22 @@ const Services = () => {
       console.log("No matching services found");
       return (
         <div className="services-display">
-          <h5>No matching services found for this .</h5>
+          <h5>No matching services found for this filter.</h5>
         </div>
       );
     }
 
     return matchedData.map((service) => {
-      const isExpanded = descriptionVisibility[service._id];
+      // Determine the price to use for display
+      let priceToUse = actualPrice; // Default to actual price
+
+      if (hasMembership && membershipPrice) {
+        priceToUse = membershipPrice; // Use membership price if applicable
+      } else if (offerPrice) {
+        priceToUse = offerPrice; // Use offer price if applicable
+      }
+
+      console.log({ actualPrice, offerPrice, membershipPrice, priceToUse });
 
       return (
         <div key={service.service._id} className="sub-category-service-item">
@@ -236,12 +256,12 @@ const Services = () => {
               </p>
               {offerPrice && (
                 <p className="offer-price">
-                  <img src={offerbadge} alt="offerbadge" />
+                  <img src={offerbadge} alt="offer badge" />
                   {offerPrice}
                 </p>
               )}
               <p className="membership-price">
-                <img src={membershipbadge} alt="offerbadge" />
+                <img src={membershipbadge} alt="membership badge" />
                 {membershipPrice}
               </p>
             </div>
@@ -253,12 +273,16 @@ const Services = () => {
           </div>
           <div className="ser-img">
             <div className="ser-image-con">
-              <img className="image" src={service.service.image} />
+              <img
+                className="image"
+                src={service.service.image}
+                alt={service.service.name}
+              />
             </div>
           </div>
           <div
             className="know-more"
-            onClick={() => handleKnowMoreClick(service.service._id)} // Use an arrow function to pass the correct function
+            onClick={() => handleKnowMoreClick(service.service._id)}
           >
             Know More
           </div>
@@ -271,6 +295,7 @@ const Services = () => {
                   service.service._id,
                   service.service.categoryId._id,
                   service.service.subCategoryId._id,
+                  priceToUse, // Pass priceToUse to handleAddToCart
                 )
               }
             >
