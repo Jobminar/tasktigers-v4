@@ -12,6 +12,7 @@ import { useAuth } from "../../context/AuthContext";
 import LoginComponent from "../../components/LoginComponent";
 import IEpopup from "./IEpopup";
 import { useLocationPrice } from "../../context/LocationPriceContext";
+import { usePackage } from "../../context/PackageContext";
 
 const Services = () => {
   const {
@@ -27,7 +28,7 @@ const Services = () => {
 
   const { customPriceData } = useLocationPrice();
   const { handleCart } = useContext(CartContext);
-  const { isAuthenticated, hasMembership } = useAuth();
+  const { isAuthenticated, hasMembership, userId } = useAuth();
   const [descriptionVisibility, setDescriptionVisibility] = useState({});
   const [isLoginVisible, setLoginVisible] = useState(false);
   const [variantName, setVariantName] = useState(""); // Track selected variant
@@ -39,11 +40,13 @@ const Services = () => {
   const [actualPrice, setActualPrice] = useState("N/A");
   const [offerPrice, setOfferPrice] = useState("N/A");
   const [membershipPrice, setMembershipPrice] = useState("");
-
+  const { fetchUserPackage } = usePackage(); // Get fetchUserPackage from usePackage
   const initialCategoryRef = useRef(null);
   useEffect(() => {
-    console.log("Has membership status:", hasMembership);
-  }, [hasMembership]);
+    if (isAuthenticated && userId) {
+      fetchUserPackage(userId); // Fetch user's package to update membership status
+    }
+  }, [isAuthenticated, userId, fetchUserPackage]);
   // pricing functionality
 
   useEffect(() => {

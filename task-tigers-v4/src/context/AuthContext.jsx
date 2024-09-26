@@ -4,6 +4,7 @@ import React, {
   useEffect,
   useContext,
   useRef,
+  useCallback,
 } from "react";
 import { auth } from "../config/firebase";
 import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
@@ -14,6 +15,7 @@ import useUserLocation from "../hooks/useUserLocation";
 import CaptchaComponent from "../components/Security/CaptchaComponent";
 import { useLocationPrice } from "../context/LocationPriceContext";
 import LZString from "lz-string";
+import { fetchUserPackage as fetchUserPackageAPI } from "./userpackage-api.js";
 
 const AuthContext = createContext();
 
@@ -228,10 +230,9 @@ export const AuthProvider = ({ children }) => {
         const data = await response.json();
         console.log("Login successful:", data);
 
-        // Compress and store the phone number
+        // Store user information in session
         const compressedPhone = LZString.compress(data.user.phone);
-        sessionStorage.setItem("compressedPhone", compressedPhone); // Store compressed phone in sessionStorage
-
+        sessionStorage.setItem("compressedPhone", compressedPhone);
         const expirationTime = Date.now() + 12 * 60 * 60 * 1000;
         sessionStorage.setItem("jwtToken", data.token);
         sessionStorage.setItem("userId", data.user._id);
@@ -243,6 +244,7 @@ export const AuthProvider = ({ children }) => {
         userIdRef.current = data.user._id;
         toast.success("Login successful.");
 
+        // PackageProvider will automatically fetch the user's package
         return true;
       } else {
         const errorData = await response.json();
@@ -327,6 +329,36 @@ export const AuthProvider = ({ children }) => {
       toast.error("Google Sign-In error.");
     }
   };
+  // Function to fetch user's package and set membership status
+  const fetchUserPackage = useCallback(async (userId) => {
+    if (!userId) return;
+    try {
+      const data = await fetchUserPackageAPI(userId); // Use the API utility function
+
+      let hasMembershipStatus = false;
+
+      if (Array.isArray(data) && data.length > 0) {
+        hasMembershipStatus = new Date(data[0].expiryDate) > new Date();
+      } else if (data && typeof data === "object" && data._id) {
+        hasMembershipStatus = new Date(data.expiryDate) > new Date();
+      }
+
+      // Update the hasMembership state
+      setHasMembership(hasMembershipStatus);
+      setHasMembership(true);
+
+      // Show toast message based on membership status
+      if (hasMembershipStatus) {
+        toast.success("You have an active membership!");
+      } else {
+        toast.info("You do not have an active membership.");
+      }
+    } catch (error) {
+      console.error("Error fetching package:", error);
+      setHasMembership(false);
+      toast.error("Failed to fetch current package.");
+    }
+  }, []);
 
   return (
     <AuthContext.Provider
@@ -349,6 +381,7 @@ export const AuthProvider = ({ children }) => {
         fetchUserInfo,
         hasValidPackage,
         setHasValidPackage,
+        fetchUserPackage,
         verifyOtp,
         phoneRef,
         otpRef,

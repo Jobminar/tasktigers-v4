@@ -1,5 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Route,
+  Routes,
+  Navigate,
+} from "react-router-dom";
 import { CategoryProvider } from "./context/CategoryContext";
 import { CartProvider } from "./context/CartContext";
 import Home from "./pages/Home/home";
@@ -9,6 +14,7 @@ import { AuthProvider } from "./context/AuthContext";
 import ProtectedRoute from "./ProtectedRoute";
 import { OrdersProvider } from "./context/OrdersContext";
 import { MessagingProvider } from "./context/MessagingContext";
+import { PackageProvider } from "./context/PackageContext";
 import Footer from "./components/Footer/footer";
 import Aboutus from "./components/Aboutus/aboutus";
 import WorkerComponent from "./pages/WorkerComponent";
@@ -47,41 +53,54 @@ const Routing = () => {
     <ToastManager>
       <LocationPriceProvider>
         <AuthProvider>
-          <CartProvider>
-            <CategoryProvider>
-              <MessagingProvider>
-                <OrdersProvider>
-                  <Router>
-                    <Header />
-                    <Routes>
-                      <Route path="/" element={<Home />} />
-                      <Route path="/home" element={<Home />} />
-                      <Route path="/services" element={<Services />} />
-                      <Route path="/ordertracking" element={<OrderTracking />} />
-                      <Route path="/registerap" element={<RegisterAsProfessional/>}/>
+          <PackageProvider>
+            <CartProvider>
+              <CategoryProvider>
+                <MessagingProvider>
+                  <OrdersProvider>
+                    <Router>
+                      <Header />
+                      <Routes>
+                        <Route path="/" element={<Home />} />
+                        <Route path="/home" element={<Home />} />
+                        <Route path="/services" element={<Services />} />
+                        <Route
+                          path="/ordertracking"
+                          element={<OrderTracking />}
+                        />
+                        <Route
+                          path="/registerap"
+                          element={<RegisterAsProfessional />}
+                        />
 
-                      <Route element={<ProtectedRoute />}>
-                        <Route path="/aboutus" element={<Aboutus />} />
-                        <Route path="/workers" element={<WorkerComponent />} />
-                        <Route path="/userprofile" element={<Userprofile />} />
-                        <Route path="/addresses" element={<Addresses />} />
-                        <Route path="/bookings" element={<Bookings />} />
-                        <Route path="/wallet" element={<Wallet />} />
-                        <Route path="/invite" element={<Invite />} />
-                        <Route path="/coupons" element={<Coupons />} />
-                        <Route path="/rewards" element={<Rewards />} />
-                        <Route path="/cart" element={<CartPage />} />
-                        <Route path="/packages" element={<Packages/>}/>
-                       
-                      </Route>
-                      <Route path="*" element={<Navigate to="/" />} />
-                    </Routes>
-                    <Footer />
-                  </Router>
-                </OrdersProvider>
-              </MessagingProvider>
-            </CategoryProvider>
-          </CartProvider>
+                        <Route element={<ProtectedRoute />}>
+                          <Route path="/aboutus" element={<Aboutus />} />
+                          <Route
+                            path="/workers"
+                            element={<WorkerComponent />}
+                          />
+                          <Route
+                            path="/userprofile"
+                            element={<Userprofile />}
+                          />
+                          <Route path="/addresses" element={<Addresses />} />
+                          <Route path="/bookings" element={<Bookings />} />
+                          <Route path="/wallet" element={<Wallet />} />
+                          <Route path="/invite" element={<Invite />} />
+                          <Route path="/coupons" element={<Coupons />} />
+                          <Route path="/rewards" element={<Rewards />} />
+                          <Route path="/cart" element={<CartPage />} />
+                          <Route path="/packages" element={<Packages />} />
+                        </Route>
+                        <Route path="*" element={<Navigate to="/" />} />
+                      </Routes>
+                      <Footer />
+                    </Router>
+                  </OrdersProvider>
+                </MessagingProvider>
+              </CategoryProvider>
+            </CartProvider>
+          </PackageProvider>
         </AuthProvider>
       </LocationPriceProvider>
     </ToastManager>
