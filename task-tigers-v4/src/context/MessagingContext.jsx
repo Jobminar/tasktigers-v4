@@ -100,18 +100,16 @@ export const MessagingProvider = ({ children }) => {
   };
 
   const sendTokenToServer = async (token, userId) => {
+    const AZURE_BASE_URL = import.meta.env.VITE_AZURE_BASE_URL;
     console.log("Sending FCM token to server:", token, "for user:", userId);
     try {
-      const response = await fetch(
-        "http://13.126.118.3:3000/v1.0/users/user-token",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ token, userId }),
+      const response = await fetch(`${AZURE_BASE_URL}/v1.0/users/user-token`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
         },
-      );
+        body: JSON.stringify({ token, userId }),
+      });
       if (!response.ok) {
         throw new Error("Failed to store FCM token");
       }

@@ -2,18 +2,16 @@ import { toast } from "react-toastify";
 
 export const saveAddress = async (addressData) => {
   try {
+    const AZURE_BASE_URL = import.meta.env.VITE_AZURE_BASE_URL;
     console.log("Sending address data to API:", addressData);
-    const response = await fetch(
-      "http://13.126.118.3:3000/v1.0/users/user-address",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${sessionStorage.getItem("jwtToken")}`,
-        },
-        body: JSON.stringify(addressData),
+    const response = await fetch(`${AZURE_BASE_URL}/v1.0/users/user-address`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${sessionStorage.getItem("jwtToken")}`,
       },
-    );
+      body: JSON.stringify(addressData),
+    });
 
     console.log("API Response:", response);
 
@@ -50,10 +48,11 @@ export const saveAddress = async (addressData) => {
 };
 
 export const getSavedAddresses = async (userId) => {
+  const AZURE_BASE_URL = import.meta.env.VITE_AZURE_BASE_URL;
   try {
     console.log("Fetching saved addresses for user ID:", userId);
     const response = await fetch(
-      `http://13.126.118.3:3000/v1.0/users/user-address/${userId}`,
+      `${AZURE_BASE_URL}/v1.0/users/user-address/${userId}`,
       {
         method: "GET",
         headers: {
@@ -82,10 +81,11 @@ export const getSavedAddresses = async (userId) => {
 };
 
 export const deleteAddress = async (addressId) => {
+  const AZURE_BASE_URL = import.meta.env.VITE_AZURE_BASE_URL;
   try {
     console.log("Deleting address with ID:", addressId);
     const response = await fetch(
-      `http://13.126.118.3:3000/v1.0/users/user-address/${addressId}`,
+      `${AZURE_BASE_URL}/v1.0/users/user-address/${addressId}`,
       {
         method: "DELETE",
         headers: {

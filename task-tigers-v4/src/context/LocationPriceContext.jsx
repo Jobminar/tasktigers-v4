@@ -203,9 +203,10 @@ export const LocationPriceProvider = ({ children }) => {
 
       // If no custom pricing is stored, fetch it
       if (!customPriceFetched && postalCode) {
+        const AZURE_BASE_URL = import.meta.env.VITE_AZURE_BASE_URL;
         try {
           const priceResponse = await axios.get(
-            `http://13.126.118.3:3000/v1.0/core/locations/custom/${postalCode}`,
+            `${AZURE_BASE_URL}/v1.0/core/locations/custom/${postalCode}`,
           );
           if (priceResponse.data && priceResponse.data.length > 0) {
             customPriceDataRef.current = priceResponse.data;
@@ -256,9 +257,10 @@ export const LocationPriceProvider = ({ children }) => {
 
     // Fetch district-level pricing data using adminLevel3
     if (adminLevel3 && !districtPriceFetched) {
+      const AZURE_BASE_URL = import.meta.env.VITE_AZURE_BASE_URL;
       try {
         const priceResponse = await axios.get(
-          `http://13.126.118.3:3000/v1.0/core/locations/district/${adminLevel3}`,
+          `${AZURE_BASE_URL}/v1.0/core/locations/district/${adminLevel3}`,
         );
         if (priceResponse.data && priceResponse.data.length > 0) {
           districtPriceDataRef.current = priceResponse.data;
@@ -273,9 +275,10 @@ export const LocationPriceProvider = ({ children }) => {
 
     // Fetch district-level pricing data using adminLevel2
     if (adminLevel2 && !districtPriceFetched) {
+      const AZURE_BASE_URL = import.meta.env.VITE_AZURE_BASE_URL;
       try {
         const priceResponse = await axios.get(
-          `http://13.126.118.3:3000/v1.0/core/locations/district/${adminLevel2}`,
+          `${AZURE_BASE_URL}/v1.0/core/locations/district/${adminLevel2}`,
         );
         if (priceResponse.data && priceResponse.data.length > 0) {
           districtPriceDataRef.current = priceResponse.data;
@@ -290,9 +293,10 @@ export const LocationPriceProvider = ({ children }) => {
 
     // Fetch district-level pricing data using adminLevel1
     if (adminLevel1 && !districtPriceFetched) {
+      const AZURE_BASE_URL = import.meta.env.VITE_AZURE_BASE_URL;
       try {
         const priceResponse = await axios.get(
-          `http://13.126.118.3:3000/v1.0/core/locations/district/${adminLevel1}`,
+          `${AZURE_BASE_URL}/v1.0/core/locations/district/${adminLevel1}`,
         );
         if (priceResponse.data && priceResponse.data.length > 0) {
           districtPriceDataRef.current = priceResponse.data;
@@ -307,9 +311,10 @@ export const LocationPriceProvider = ({ children }) => {
 
     // Fetch district-level pricing data using locality
     if (locality && !districtPriceFetched) {
+      const AZURE_BASE_URL = import.meta.env.VITE_AZURE_BASE_URL;
       try {
         const priceResponse = await axios.get(
-          `http://13.126.118.3:3000/v1.0/core/locations/district/${locality}`,
+          `${AZURE_BASE_URL}/v1.0/core/locations/district/${locality}`,
         );
         if (priceResponse.data && priceResponse.data.length > 0) {
           districtPriceDataRef.current = priceResponse.data;

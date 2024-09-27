@@ -25,11 +25,10 @@ export const CategoryProvider = ({ children }) => {
   // Fetch categories when the component mounts
   useEffect(() => {
     const fetchCategories = async () => {
+      const AZURE_BASE_URL = import.meta.env.VITE_AZURE_BASE_URL;
       setLoading(true);
       try {
-        const response = await fetch(
-          "http://13.126.118.3:3000/v1.0/core/categories",
-        );
+        const response = await fetch(`${AZURE_BASE_URL}/v1.0/core/categories`);
         const result = await response.json();
         if (Array.isArray(result) && result.length > 0) {
           setCategoryData(result);
@@ -49,12 +48,13 @@ export const CategoryProvider = ({ children }) => {
 
   // Fetch subcategories based on selected category
   useEffect(() => {
+    const AZURE_BASE_URL = import.meta.env.VITE_AZURE_BASE_URL;
     if (selectedCategoryId) {
       const fetchSubCategories = async () => {
         setLoading(true);
         try {
           const response = await fetch(
-            `http://13.126.118.3:3000/v1.0/core/sub-categories/category/${selectedCategoryId}`,
+            `${AZURE_BASE_URL}/v1.0/core/sub-categories/category/${selectedCategoryId}`,
           );
           const result = await response.json();
           if (Array.isArray(result)) {
@@ -76,12 +76,13 @@ export const CategoryProvider = ({ children }) => {
 
   // Fetch services based on selected category and subcategory
   useEffect(() => {
+    const AZURE_BASE_URL = import.meta.env.VITE_AZURE_BASE_URL;
     if (selectedCategoryId && selectedSubCategoryId) {
       const fetchServices = async () => {
         setLoading(true);
         try {
           const response = await fetch(
-            `http://13.126.118.3:3000/v1.0/core/services/filter/${selectedCategoryId}/${selectedSubCategoryId}`,
+            `${AZURE_BASE_URL}/v1.0/core/services/filter/${selectedCategoryId}/${selectedSubCategoryId}`,
           );
           const data = await response.json();
           setServicesData(data);

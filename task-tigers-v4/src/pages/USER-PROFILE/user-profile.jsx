@@ -28,9 +28,10 @@ const Userprofile = () => {
 
   useEffect(() => {
     const fetchUserData = async () => {
+      const AZURE_BASE_URL = import.meta.env.VITE_AZURE_BASE_URL;
       try {
         const response = await fetch(
-          `http://13.126.118.3:3000/v1.0/users/userAuth/${userId}`,
+          `${AZURE_BASE_URL}/v1.0/users/userAuth/${userId}`,
         );
         if (response.ok) {
           const data = await response.json();
@@ -84,8 +85,9 @@ const Userprofile = () => {
     }
 
     try {
+      const AZURE_BASE_URL = import.meta.env.VITE_AZURE_BASE_URL;
       const response = await fetch(
-        `http://13.126.118.3:3000/v1.0/users/userAuth/${userId}`,
+        `${AZURE_BASE_URL}/v1.0/users/userAuth/${userId}`,
         {
           method: "PUT",
           body: formDataToSend,

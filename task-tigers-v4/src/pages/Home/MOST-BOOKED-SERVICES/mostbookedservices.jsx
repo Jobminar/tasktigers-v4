@@ -12,9 +12,10 @@ const CarouselComponent = () => {
 
   useEffect(() => {
     const fetchData = async () => {
+      const AZURE_BASE_URL = import.meta.env.VITE_AZURE_BASE_URL;
       try {
         const response = await fetch(
-          "http://13.126.118.3:3000/v1.0/admin/most-booked",
+          `${AZURE_BASE_URL}/v1.0/admin/most-booked`,
         );
         const data = await response.json();
         setItems(data);

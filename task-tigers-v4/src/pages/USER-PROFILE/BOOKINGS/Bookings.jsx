@@ -17,9 +17,10 @@ const Bookings = () => {
   useEffect(() => {
     console.log(userId, "userid in bookings");
     const fetchUsername = async () => {
+      const AZURE_BASE_URL = import.meta.env.VITE_AZURE_BASE_URL;
       try {
         const response = await fetch(
-          `http://13.126.118.3:3000/v1.0/users/userAuth/${userId}`,
+          `${AZURE_BASE_URL}/v1.0/users/userAuth/${userId}`,
         );
         const data = await response.json();
         setUsername(data.name);
@@ -30,9 +31,10 @@ const Bookings = () => {
 
     // fetch orders by userid
     const fetchOrders = async () => {
+      const AZURE_BASE_URL = import.meta.env.VITE_AZURE_BASE_URL;
       try {
         const response = await fetch(
-          `http://13.126.118.3:3000/v1.0/users/order/${userId}`,
+          `${AZURE_BASE_URL}/v1.0/users/order/${userId}`,
         );
         const data = await response.json();
         setOrders(data);

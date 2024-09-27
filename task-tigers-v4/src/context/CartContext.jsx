@@ -73,7 +73,7 @@ export const CartProvider = ({ children, cartId, showLogin }) => {
 
     try {
       const response = await fetch(
-        `http://13.126.118.3:3000/v1.0/users/cart/${userId}`,
+        `${AZURE_BASE_URL}/v1.0/users/cart/${userId}`,
       );
 
       if (!response.ok) {
@@ -128,8 +128,9 @@ export const CartProvider = ({ children, cartId, showLogin }) => {
     }
 
     try {
+      const AZURE_BASE_URL = import.meta.env.VITE_AZURE_BASE_URL;
       const response = await fetch(
-        "http://13.126.118.3:3000/v1.0/users/cart/create-cart",
+        `${AZURE_BASE_URL}/v1.0/users/cart/create-cart`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -201,17 +202,15 @@ export const CartProvider = ({ children, cartId, showLogin }) => {
 
   // Remove the item from the cart when itemIdToRemove is set
   useEffect(() => {
+    const AZURE_BASE_URL = import.meta.env.VITE_AZURE_BASE_URL;
     if (itemIdToRemove === null) return;
 
     const userId = user?._id || sessionStorage.getItem("userId");
     console.log("Removing item with ID from cart:", itemIdToRemove);
 
-    fetch(
-      `http://13.126.118.3:3000/v1.0/users/cart/${userId}/${itemIdToRemove}`,
-      {
-        method: "DELETE",
-      },
-    )
+    fetch(`${AZURE_BASE_URL}/v1.0/users/cart/${userId}/${itemIdToRemove}`, {
+      method: "DELETE",
+    })
       .then((response) => {
         if (response.ok) {
           console.log("Item removed successfully.");
@@ -266,6 +265,7 @@ export const CartProvider = ({ children, cartId, showLogin }) => {
    * Function to clear all items in the cart
    */
   const clearCart = async () => {
+    const AZURE_BASE_URL = import.meta.env.VITE_AZURE_BASE_URL;
     const userId = sessionStorage.getItem("userId");
 
     if (!userId) {
@@ -276,7 +276,7 @@ export const CartProvider = ({ children, cartId, showLogin }) => {
     try {
       console.log(`Attempting to clear cart for userId: ${userId}`);
       const response = await fetch(
-        `http://13.126.118.3:3000/v1.0/users/cart/${userId}`,
+        `${AZURE_BASE_URL}/v1.0/users/cart/${userId}`,
         { method: "DELETE" },
       );
 
@@ -340,7 +340,7 @@ export const CartProvider = ({ children, cartId, showLogin }) => {
   // Function to handle creating a new order using the /create-order API
   const createOrder = async () => {
     console.log("Initiating order creation...");
-
+    const AZURE_BASE_URL = import.meta.env.VITE_AZURE_BASE_URL;
     try {
       const orderData = {
         amount: totalPrice * 100,
@@ -356,7 +356,7 @@ export const CartProvider = ({ children, cartId, showLogin }) => {
       console.log("Order data to be sent:", orderData);
 
       const response = await fetch(
-        "http://13.126.118.3:3000/v1.0/orders/create-order",
+        `${AZURE_BASE_URL}/v1.0/orders/create-order`,
         {
           method: "POST",
           headers: {

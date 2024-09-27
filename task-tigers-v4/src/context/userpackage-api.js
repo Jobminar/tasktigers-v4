@@ -2,7 +2,7 @@
 export const fetchUserPackage = async (userId) => {
   try {
     const response = await fetch(
-      `http://13.126.118.3:3000/v1.0/users/user-packages/${userId}`,
+      `${AZURE_BASE_URL}/v1.0/users/user-packages/${userId}`,
     );
     const data = await response.json();
 

@@ -124,12 +124,12 @@ export const OrdersProvider = ({ children }) => {
     };
 
     console.log("Order Data:", orderData);
-
+    const AZURE_BASE_URL = import.meta.env.VITE_AZURE_BASE_URL;
     try {
       setLoading(true);
 
       const response = await fetch(
-        "http://13.126.118.3:3000/v1.0/users/order/create-order",
+        `${AZURE_BASE_URL}/v1.0/users/order/create-order`,
         {
           method: "POST",
           headers: {
@@ -154,7 +154,7 @@ export const OrdersProvider = ({ children }) => {
         setOrderCreated(true);
 
         // Clear the cart after successful order creation
-        await fetch(`http://13.126.118.3:3000/v1.0/users/cart/${userId}`, {
+        await fetch(`${AZURE_BASE_URL}/v1.0/users/cart/${userId}`, {
           method: "DELETE",
         });
 

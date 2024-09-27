@@ -20,11 +20,12 @@ const Addresses = () => {
   }, []);
 
   useEffect(() => {
+    const AZURE_BASE_URL = import.meta.env.VITE_AZURE_BASE_URL;
     if (userId) {
       const fetchAddresses = async (uid) => {
         try {
           const response = await fetch(
-            `http://13.126.118.3:3000/v1.0/users/user-address/${uid}`,
+            `${AZURE_BASE_URL}/v1.0/users/user-address/${uid}`,
           );
           if (response.ok) {
             const data = await response.json();

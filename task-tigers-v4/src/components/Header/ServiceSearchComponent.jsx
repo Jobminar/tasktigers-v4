@@ -13,9 +13,10 @@ const ServiceSearchComponent = ({ searchQuery, onSelect }) => {
   useEffect(() => {
     // Fetch services data from the API
     const fetchServices = async () => {
+      const AZURE_BASE_URL = import.meta.env.VITE_AZURE_BASE_URL;
       try {
         const response = await axios.get(
-          "http://13.126.118.3:3000/v1.0/core/services/",
+          `${AZURE_BASE_URL}/v1.0/core/services/`,
         );
         setServices(response.data);
       } catch (error) {

@@ -110,8 +110,9 @@ export const AuthProvider = ({ children }) => {
   //getting user profile data--------------------------------------------------------------------
   const fetchUserInfo = async (userId) => {
     try {
+      const AZURE_BASE_URL = import.meta.env.VITE_AZURE_BASE_URL;
       const response = await fetch(
-        `http://13.126.118.3:3000/v1.0/users/userAuth/${userId}`,
+        `${AZURE_BASE_URL}/v1.0/users/userAuth/${userId}`,
         {
           headers: {
             "Content-Type": "application/json",
@@ -162,8 +163,9 @@ export const AuthProvider = ({ children }) => {
   // Assume this is part of your AuthContext
   const sendOtp = async ({ phone }) => {
     try {
+      const AZURE_BASE_URL = import.meta.env.VITE_AZURE_BASE_URL;
       const response = await fetch(
-        "http://13.126.118.3:3000/v1.0/users/userAuth/send-otp",
+        `${AZURE_BASE_URL}/v1.0/users/userAuth/send-otp`,
         {
           method: "POST",
           headers: {
@@ -215,8 +217,9 @@ export const AuthProvider = ({ children }) => {
     };
 
     try {
+      const AZURE_BASE_URL = import.meta.env.VITE_AZURE_BASE_URL;
       const response = await fetch(
-        "http://13.126.118.3:3000/v1.0/users/userAuth/login",
+        `${AZURE_BASE_URL}/v1.0/users/userAuth/login`,
         {
           method: "POST",
           headers: {

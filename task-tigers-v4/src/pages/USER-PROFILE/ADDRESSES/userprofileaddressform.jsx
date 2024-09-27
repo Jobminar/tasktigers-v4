@@ -65,7 +65,7 @@ const Userprofileaddressform = ({ userId }) => {
   const handleSave = async () => {
     // if (validateFields()) {
     //   try {
-    //     const response = await fetch(`http://13.126.118.3:3000/v1.0/users/user-address/${userId}`, {
+    //     const response = await fetch(`${AZURE_BASE_URL}/v1.0/users/user-address/${userId}`, {
     //       method: "POST",
     //       headers: {
     //         "Content-Type": "application/json",

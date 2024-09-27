@@ -26,12 +26,13 @@ const IEpopup = ({ isOpen, onClose, serviceId }) => {
   };
 
   useEffect(() => {
+    const AZURE_BASE_URL = import.meta.env.VITE_AZURE_BASE_URL;
     if (isOpen) {
       const fetchServiceDetails = async () => {
         setLoading(true);
         try {
           const response = await axios.get(
-            "http://13.126.118.3:3000:3000//v1.0/core/inclusion-exclusion",
+            `${AZURE_BASE_URL}:3000//v1.0/core/inclusion-exclusion`,
           );
 
           const filteredDetails = response.data.filter(

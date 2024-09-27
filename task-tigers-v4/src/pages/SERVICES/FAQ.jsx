@@ -11,10 +11,9 @@ const FAQ = ({ serviceId }) => {
   useEffect(() => {
     const fetchFAQs = async () => {
       setLoading(true);
+      const AZURE_BASE_URL = import.meta.env.VITE_AZURE_BASE_URL;
       try {
-        const response = await axios.get(
-          "http://13.126.118.3:3000/v1.0/users/faq",
-        );
+        const response = await axios.get(`${AZURE_BASE_URL}/v1.0/users/faq`);
         const filteredFaqs = response.data.filter(
           (faq) => faq.serviceId?._id === serviceId,
         );
