@@ -1,8 +1,12 @@
+/* CurrentPackage.css */
+
 .current-package-container {
     width: 100%;
     display: flex;
     justify-content: center;
     margin-top: 20px;
+    padding: 10px;
+    box-sizing: border-box;
 }
 
 .package-card {
@@ -11,6 +15,7 @@
     box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
     padding: 20px;
     max-width: 400px;
+    width: 100%;
     text-align: left;
     transition: transform 0.3s ease;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -43,8 +48,18 @@
 
 .package-status {
     font-weight: bold;
-    color: #ff4b5c;
     font-size: 1.1rem;
+}
+
+/* Add dynamic color classes */
+.package-status.expired {
+    color: #ff4b5c;
+    /* Red for expired */
+}
+
+.package-status.active {
+    color: #4caf50;
+    /* Green for active */
 }
 
 .no-package {
@@ -52,6 +67,7 @@
     border-radius: 15px;
     padding: 20px;
     max-width: 400px;
+    width: 100%;
     text-align: center;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
@@ -64,4 +80,23 @@
 .no-package p {
     font-size: 1rem;
     color: #777;
+}
+
+/* Responsive styles */
+@media (max-width: 600px) {
+
+    .package-card,
+    .no-package {
+        max-width: 100%;
+        padding: 15px;
+        font-size: 0.9rem;
+    }
+
+    .package-title {
+        font-size: 1.2em;
+    }
+
+    .package-content p {
+        font-size: 0.9rem;
+    }
 }

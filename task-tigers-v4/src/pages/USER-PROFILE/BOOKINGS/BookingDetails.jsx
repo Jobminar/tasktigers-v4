@@ -1,98 +1,84 @@
 import React from "react";
-import "./BookingDetails.css";
+import { useLocation } from "react-router-dom";
+import "./BookingDetails.css"; // Assuming you have a CSS file for styling
 
-const BookingDetails = ({ booking }) => {
-  console.log(booking,'booking details in bookings')
+const BookingDetails = () => {
+  const location = useLocation();
+  const { booking } = location.state || {};
+
+  if (!booking) {
+    return <p>No booking details found.</p>;
+  }
+
   const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    return date
-      .toLocaleDateString("en-US", {
-        weekday: "short",
-        day: "2-digit",
-        month: "short",
-        year: "numeric",
-      })
-      .replace(/(\d{4})/, "2024"); // Replace the year with 2024
+    const options = {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    };
+    return new Date(dateString).toLocaleDateString("en-US", options);
   };
 
-  // Provide default values if location or address is not available
-  const locationAddress =
-    booking.location?.address ||
-    "Road no-2,Jal Vayu vihar, Addagutta, Hyderabad";
-  const jobStartTime = booking.items[0]?.selectedTime || "10:00 PM";
-  const jobStartDate = formatDate(
-    booking.items[0]?.selectedDate || "2024-08-12",
-  );
-  const jobEndTime = booking.items[0]?.endTime || "11:00 PM";
-  const jobEndDate = formatDate(booking.items[0]?.endDate || "2024-08-12");
+  // Calculate the total value
+  const totalValue = booking.items.reduce((total, item) => {
+    return total + (item.serviceId?.price || 0);
+  }, 0);
 
   return (
-    // <div className="booking-details-container">
-    //   <div className="booking-details-header">
-    //     <h1>{booking.username || "Username"}</h1>
-    //     <p>
-    //       {jobStartDate} {jobStartTime}
-    //     </p>
-    //     <button className="help-button">HELP</button>
-    //   </div>
+    <div className="booking-details-container">
+      {/* Header */}
+      <div className="booking-header">
+        <h1>{booking.userId?.name}</h1>
+        <button className="help-button">HELP</button>
+      </div>
+      <p className="booking-time">
+        {formatDate(booking.items[0]?.scheduledDate)}
+      </p>
 
-    //   <div className="booking-details-body">
-    //     <div className="customer-details">
-    //       <h2>Customer Details</h2>
-    //       <div className="location-box">
-    //         <p>
-    //           <strong>Location</strong>
-    //         </p>
-    //         <p>{locationAddress}</p>
-    //         <div className="job-details">
-    //           <div>
-    //             <p>
-    //               <strong>Job start</strong>
-    //             </p>
-    //             <p>
-    //               {jobStartTime} {jobStartDate}
-    //             </p>
-    //           </div>
-    //           <div>
-    //             <p>
-    //               <strong>Job End</strong>
-    //             </p>
-    //             <p>
-    //               {jobEndTime} {jobEndDate}
-    //             </p>
-    //           </div>
-    //         </div>
-    //       </div>
-    //     </div>
-
-    //     <div className="summary">
-    //       <h2>Summary</h2>
-    //       {booking.items.map((item, index) => (
-    //         <div className="summary-item" key={index}>
-    //           <p>{item.serviceName || "1BHK cleaning"}</p>
-    //           <p>₹ {item.serviceId?.serviceVariants[0]?.price || "999"}</p>
-    //         </div>
-    //       ))}
-    //       <div className="summary-item">
-    //         <p>Others</p>
-    //         <p>₹ {booking.convenienceFee || "10"}</p>
-    //       </div>
-    //       <div className="summary-item total">
-    //         <p>Total value</p>
-    //         <p>₹ {booking.totalAmount || "N/A"}</p>
-    //       </div>
-    //     </div>
-    //   </div>
-    // </div>
-    <>
-        <div className="booking-view-details">
-                {/* provider details would be pending due to not yet completed nbackend */}
-                <div className="user-bookings-details">
-                      <h1>Booking Details</h1>
-                      
-                </div>
+      {/* Customer Details */}
+      <div className="customer-details">
+        <h2>Customer Details</h2>
+        <div className="location-card">
+          <h3 id="booking-detail-location">Location</h3>
+          <p>{`${booking.addressId?.address}, ${booking.addressId?.landmark}, ${booking.addressId?.city}, ${booking.addressId?.state} - ${booking.addressId?.pincode}`}</p>
+          <div className="job-timings">
+            <p>Job Start: {formatDate(booking.items[0]?.scheduledDate)}</p>
+            <p>Job End: {formatDate(booking.items[0]?.scheduledDate)}</p>{" "}
+            {/* Adjust if you have separate end date */}
+          </div>
         </div>
-    </>
+      </div>
+
+      {/* Summary Section */}
+      <div className="summary-section">
+        <h2>Summary</h2>
+        <div className="summary-container">
+          {booking.items.map((item, index) => (
+            <div className="summary-item" key={index}>
+              <div className="item-description">
+                <p>
+                  {item.quantity} X {item.serviceId?.name}
+                </p>
+                <p>{item.serviceId?.name}</p>
+              </div>
+              <p className="booking-item-price">
+                ₹ {item.serviceId?.price || "N/A"}
+              </p>
+            </div>
+          ))}
+          <div className="other-charges">
+            <p>Convenience Fee</p>
+            <p>₹ {booking.convenienceFee || "N/A"}</p>
+          </div>
+          <div className="total-value">
+            <p>Total Value</p>
+            <p>₹ {totalValue}</p>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 };
 

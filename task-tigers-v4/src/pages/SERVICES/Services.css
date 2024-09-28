@@ -700,23 +700,17 @@
 
     }
 
-    .sub-category-item.active::before {
-        content: '';
-        position: absolute;
-        left: -10px;
-        top: 50%;
-        transform: translateY(-50%);
-        width: 5px;
-        height: 48px;
-        background-color: rgba(215, 114, 34, 1);
-        border-radius: 0 5px 5px 0;
+    .sub-category-item {
+        display: grid;
+        grid-template-columns: 20% 80%;
+        align-items: center;
+        box-shadow: rgba(0, 0, 0, 0.5) 0px 25px 20px -30px;
+        padding-left: 25px;
+        min-height: 4rem;
+        position: relative;
+        color: black;
+        max-width: 28rem;
     }
-
-}
-
-@media (min-width: 600px) and (max-width: 820px) {
-
-
 
     .sub-category-item:hover {
         cursor: pointer;
@@ -733,6 +727,40 @@
         background-color: rgba(215, 114, 34, 1);
         border-radius: 0 5px 5px 0;
     }
+
+}
+
+@media (min-width: 600px) and (max-width: 820px) {
+
+    .sub-category-item {
+        display: grid;
+        grid-template-columns: 20% 80%;
+        align-items: center;
+        box-shadow: rgba(0, 0, 0, 0.5) 0px 25px 20px -30px;
+        padding-left: 25px;
+        min-height: 4rem;
+        position: relative;
+        color: black;
+        max-width: 28rem;
+    }
+
+    .sub-category-item:hover {
+        cursor: pointer;
+    }
+
+    .sub-category-item.active::before {
+        content: '';
+        position: absolute;
+        left: -10px;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 15px;
+        height: 48px;
+        background-color: rgba(215, 114, 34, 1);
+        border-radius: 0 5px 5px 0;
+    }
+
+
 
     .services-cart-display {
         grid-template-columns: 100%;
@@ -753,6 +781,18 @@
 @media (min-width: 820px) and (max-width: 1020px) {
 
 
+
+    .sub-category-item {
+        display: grid;
+        grid-template-columns: 20% 80%;
+        align-items: center;
+        box-shadow: rgba(0, 0, 0, 0.5) 0px 25px 20px -30px;
+        padding-left: 25px;
+        min-height: 4rem;
+        position: relative;
+        color: black;
+        max-width: 28rem;
+    }
 
     .sub-category-item:hover {
         cursor: pointer;
@@ -788,6 +828,18 @@
 
 @media (min-width: 1500px) and (max-width: 2000px) {
 
+
+    .sub-category-item {
+        display: grid;
+        grid-template-columns: 20% 80%;
+        align-items: center;
+        box-shadow: rgba(0, 0, 0, 0.5) 0px 25px 20px -30px;
+        padding-left: 25px;
+        min-height: 4rem;
+        position: relative;
+        color: black;
+        max-width: 28rem;
+    }
 
     .sub-category-item:hover {
         cursor: pointer;

@@ -188,15 +188,18 @@ const Packages = () => {
   return (
     <>
       <div className="save-money-main-con">
-        <CurrentPackage userId={userIdRef.current} />
         <div className="savemoney-svg">
           <img src={savemoney} alt="Save Money" />
         </div>
         <h2 className="s-m-headding">Save more % on Bookings</h2>
+        <CurrentPackage userId={userIdRef.current} />
         <div className="s-m-main-con">
           <div className="s-m-sub-con">
-            <p className="plus">Plus benefits</p>
-            <img src={offer} alt="Offer" className="offer-s-m-badge" />
+            <span>
+              {" "}
+              <img src={offer} alt="Offer" className="offer-s-m-badge" />
+              <p className="plus">Plus benefits</p>
+            </span>
             <p className="percent-off">Get 10% off on all categories</p>
             <p className="enjoy">
               Enjoy 10% discount on all bookings in any category

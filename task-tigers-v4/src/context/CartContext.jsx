@@ -63,6 +63,7 @@ export const CartProvider = ({ children, cartId, showLogin }) => {
    * Function to fetch cart for the authenticated user
    */
   const fetchCart = useCallback(async () => {
+    const AZURE_BASE_URL = import.meta.env.VITE_AZURE_BASE_URL;
     const userId = user?._id || sessionStorage.getItem("userId");
     if (!userId) {
       console.warn("fetchCart: user or userId is undefined");

@@ -1,0 +1,84 @@
+/* File: HelpPage.css */
+.help-page-container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 20px;
+    font-family: 'Roboto', sans-serif;
+    color: #333;
+    background-color: #fdfdfd;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.back-button {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+
+.help-title {
+    font-size: 2rem;
+    font-weight: bold;
+    margin: 20px 0;
+}
+
+.recent-bookings-section,
+.help-topics-section {
+    margin-top: 30px;
+}
+
+.section-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+.booking-item,
+.help-topic-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px solid #ddd;
+}
+
+.booking-icon,
+.topic-icon {
+    width: 40px;
+    height: 40px;
+}
+
+.booking-info {
+    flex: 1;
+    margin-left: 15px;
+}
+
+.booking-title {
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+.booking-date {
+    font-size: 1rem;
+    color: #666;
+}
+
+.booking-arrow,
+.topic-arrow {
+    font-size: 1.5rem;
+    color: #888;
+}
+
+.booking-history-link {
+    display: block;
+    margin-top: 15px;
+    color: #007BFF;
+    text-decoration: none;
+}
+
+.topic-name {
+    flex: 1;
+    margin-left: 15px;
+    font-size: 1.2rem;
+}

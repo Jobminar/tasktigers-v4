@@ -21,6 +21,7 @@ import WorkerComponent from "./pages/WorkerComponent";
 import Userprofile from "./pages/USER-PROFILE/user-profile";
 import Addresses from "./pages/USER-PROFILE/ADDRESSES/addresses";
 import Bookings from "./pages/USER-PROFILE/BOOKINGS/Bookings.jsx";
+import BookingDetails from "./pages/USER-PROFILE/BOOKINGS/BookingDetails.jsx";
 import Wallet from "./pages/USER-PROFILE/WALLET/wallet.jsx";
 import Invite from "./pages/USER-PROFILE/INVITEAFRIEND/invite.jsx";
 import Coupons from "./pages/USER-PROFILE/COUPONS/coupons.jsx";
@@ -91,6 +92,10 @@ const Routing = () => {
                           <Route path="/rewards" element={<Rewards />} />
                           <Route path="/cart" element={<CartPage />} />
                           <Route path="/packages" element={<Packages />} />
+                          <Route
+                            path="/booking-details/:id"
+                            element={<BookingDetails />}
+                          />
                         </Route>
                         <Route path="*" element={<Navigate to="/" />} />
                       </Routes>

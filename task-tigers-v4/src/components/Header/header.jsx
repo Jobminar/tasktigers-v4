@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext"; // Use authentication context
 import { CartContext, CartProvider } from "../../context/CartContext"; // Use cart context
 import { useLocationPrice } from "../../context/LocationPriceContext"; // Use location and price context
-import MobileHeader from "./MobileHeader"; // Import the MobileHeader component
 import "./header.css"; // Custom CSS
 import playstore from "../../assets/images/play-store.svg";
 import apple from "../../assets/images/apple.svg";
@@ -11,20 +10,22 @@ import logo from "../../assets/images/logo.png";
 import help from "../../assets/images/help.png";
 import translate from "../../assets/images/translate.png";
 import profile from "../../assets/images/profile.png";
-import location from "../../assets/images/location-marker.png";
-import search from "../../assets/images/search.png";
+import locationIcon from "../../assets/images/location-marker.png";
+import searchIcon from "../../assets/images/search.png";
 import LoginComponent from "../LoginComponent";
 import ChatbotComponent from "../Chat/ChatbotComponent";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faSignOutAlt,
   faCartShopping,
+  faUserCircle,
 } from "@fortawesome/free-solid-svg-icons";
 import CitySearchComponent from "./CitySearchComponent"; // City search component
 import ServiceSearchComponent from "./ServiceSearchComponent"; // Service search component
 import { confirmAlert } from "react-confirm-alert"; // Alert library for confirming actions
 import { toast } from "react-hot-toast"; // Toast notifications
 import "react-confirm-alert/src/react-confirm-alert.css"; // Confirm alert styles
+import { FaBars } from "react-icons/fa"; // Icon for mobile menu
 import registerasaprofessional from "../../assets/images/registerprofessional.png";
 
 // Custom hook for typewriter effect in the search bar placeholder
@@ -63,7 +64,7 @@ const useTypewriter = (texts, typing, speed = 100, pause = 2000) => {
 };
 
 const Header = ({ children }) => {
-  const navigate = useNavigate(); // Initialize navigation
+  const navigate = useNavigate();
   const {
     isAuthenticated,
     userCity,
@@ -71,57 +72,43 @@ const Header = ({ children }) => {
     updateUserLocation,
     logout,
   } = useAuth();
-  const { fetchGeocodeData } = useLocationPrice(); // Use location and price context to get geocode data
-  const { totalItems, clearCart } = useContext(CartContext); // Cart context to get number of items in cart
+  const { fetchGeocodeData } = useLocationPrice();
+  const { totalItems } = useContext(CartContext);
 
-  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768); // State to check if the device is mobile
-  const [isLoginVisible, setLoginVisible] = useState(false); // Control login modal visibility
-  const [isChatbotVisible, setIsChatbotVisible] = useState(false); // Control chatbot visibility
-  const [isProfileMenuVisible, setProfileMenuVisible] = useState(false); // Toggle profile menu
-  const [locationQuery, setLocationQuery] = useState(
+  const selectedCityRef = useRef(
     sessionStorage.getItem("selectedCity") || userCity || "",
-  ); // Current city or selected city
-  const [selectedCity, setSelectedCity] = useState(
-    sessionStorage.getItem("selectedCity") || userCity || "",
-  ); // State for selected city
-  const [isDropdownVisible, setIsDropdownVisible] = useState(false); // Dropdown for city search
-  const [serviceQuery, setServiceQuery] = useState(""); // Service search query
-  const [isTyping, setIsTyping] = useState(false); // Detect typing in service search
-  const [isServiceFocused, setIsServiceFocused] = useState(false); // Focus state for service input
-  const [cities, setCities] = useState([]); // City search results
-  const [isMenuOpen, setIsMenuOpen] = useState(false); // Toggle mobile menu
-  const timeoutRef = useRef(null); // Ref to control search input debounce
+  );
+  const [locationQuery, setLocationQuery] = useState(selectedCityRef.current);
+  const [selectedCity, setSelectedCity] = useState(selectedCityRef.current);
+  const [isDropdownVisible, setIsDropdownVisible] = useState(false);
+  const [isLoginVisible, setLoginVisible] = useState(false);
+  const [isChatbotVisible, setIsChatbotVisible] = useState(false);
+  const [isProfileMenuVisible, setProfileMenuVisible] = useState(false);
+  const [serviceQuery, setServiceQuery] = useState("");
+  const [isTyping, setIsTyping] = useState(false);
+  const [isServiceFocused, setIsServiceFocused] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [cities, setCities] = useState([]);
+  const timeoutRef = useRef(null);
 
   useEffect(() => {
-    // Handle window resize to detect mobile view
-    const handleResize = () => {
-      setIsMobile(window.innerWidth <= 768);
-    };
-
-    window.addEventListener("resize", handleResize);
-
-    // Cleanup event listener on component unmount
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, []);
-
-  useEffect(() => {
-    // Update location input when userCity changes
     if (userCity) {
+      selectedCityRef.current = userCity;
       setLocationQuery(userCity);
       setSelectedCity(userCity);
     }
   }, [userCity]);
 
   useEffect(() => {
-    // Save selected city to session storage when it changes
-    sessionStorage.setItem("selectedCity", selectedCity);
+    sessionStorage.setItem("selectedCity", selectedCityRef.current);
   }, [selectedCity]);
 
-  // Placeholder texts for typewriter effect in service search
-  const placeholders = [" Room cleaning", " Laundry", " Gardening"];
-  const placeholder = useTypewriter(placeholders, isTyping); // Use typewriter effect for dynamic placeholder
+  const placeholders = [
+    "Room cleaning, kitchen cleaning",
+    "Laundry, dishwashing",
+    "Gardening, pet sitting",
+  ];
+  const placeholder = useTypewriter(placeholders, isTyping);
 
   const handleProfileClick = () => {
     if (!isAuthenticated) {
@@ -129,14 +116,12 @@ const Header = ({ children }) => {
     } else {
       setProfileMenuVisible((prev) => !prev);
       setIsMenuOpen((prev) => !prev);
-
       if (!isProfileMenuVisible) {
         toast.success("You can access your profile now!");
         setTimeout(() => {
           setProfileMenuVisible(false);
         }, 60000);
       }
-
       if (!isMenuOpen) {
         setTimeout(() => {
           setIsMenuOpen(false);
@@ -145,24 +130,39 @@ const Header = ({ children }) => {
     }
   };
 
-  const closeModal = () => {
-    setLoginVisible(false);
+  const closeModal = () => setLoginVisible(false);
+
+  const toggleChatbot = () => setIsChatbotVisible((prev) => !prev);
+
+  const handleBookServiceClick = () => navigate("/services");
+
+  const handleCartClick = () => navigate("/cart");
+
+  const handleLogoClick = () => navigate("/");
+
+  const handleMyAccountClick = () => {
+    navigate("/userprofile");
+    setProfileMenuVisible(false);
   };
 
-  const toggleChatbot = () => {
-    setIsChatbotVisible((prev) => !prev);
+  const handleMyAddressesClick = () => {
+    navigate("/addresses");
+    setProfileMenuVisible(false);
   };
 
-  const handleBookServiceClick = () => {
-    navigate("/services");
+  const handleMyBookingsClick = () => {
+    navigate("/bookings");
+    setProfileMenuVisible(false);
   };
 
-  const handleCartClick = () => {
-    navigate("/cart");
+  const handleMyPackagesClick = () => {
+    navigate("/packages");
+    setProfileMenuVisible(false);
   };
 
-  const handleLogoClick = () => {
-    navigate("/");
+  const handleLogoutClick = () => {
+    logout();
+    setProfileMenuVisible(false);
   };
 
   const handleCitySelect = (city) => {
@@ -173,13 +173,13 @@ const Header = ({ children }) => {
         {
           label: "Yes",
           onClick: () => {
+            selectedCityRef.current = city.name;
             setSelectedCity(city.name);
             setLocationQuery(city.name);
-            sessionStorage.setItem("selectedCity", city.name);
-            clearCart();
             setIsDropdownVisible(false);
             updateUserLocation(city.coordinates[1], city.coordinates[0]);
             fetchGeocodeData(city.coordinates[1], city.coordinates[0]);
+            sessionStorage.setItem("selectedCity", city.name);
           },
         },
         {
@@ -226,6 +226,7 @@ const Header = ({ children }) => {
                 (position) => {
                   const { latitude, longitude } = position.coords;
                   fetchCityName(latitude, longitude).then((cityName) => {
+                    selectedCityRef.current = cityName;
                     setSelectedCity(cityName);
                     setLocationQuery(cityName);
                     updateUserLocation(latitude, longitude);
@@ -268,12 +269,6 @@ const Header = ({ children }) => {
     navigate("/services");
   };
 
-  // If the screen is mobile, render the MobileHeader component
-  if (isMobile) {
-    return <MobileHeader />;
-  }
-
-  // The rest of the header code for non-mobile screens
   return (
     <CartProvider showLogin={setLoginVisible}>
       <div className="main-h">
@@ -300,18 +295,35 @@ const Header = ({ children }) => {
               {totalItems > 0 && <span className="badge">{totalItems}</span>}
             </div>
             <div>
-              <img
-                src={profile}
-                alt="profile-icon"
+              <FontAwesomeIcon
+                icon={faUserCircle}
+                style={{ fontSize: "1.8rem", cursor: "pointer" }}
                 onClick={handleProfileClick}
               />
               {isProfileMenuVisible && (
                 <div className="profileMenu">
-                  <div onClick={() => navigate("/userprofile")}>Account</div>
-                  <div onClick={() => navigate("/addresses")}>My Addresses</div>
-                  <div onClick={() => navigate("/bookings")}>My Bookings</div>
-                  <div onClick={() => navigate("/packages")}>My Packages</div>
-                  <div onClick={() => logout()}>Log Out</div>
+                  <div className="profile-list" onClick={handleMyAccountClick}>
+                    Account
+                  </div>
+                  <div
+                    className="profile-list"
+                    onClick={handleMyAddressesClick}
+                  >
+                    My Addresses
+                  </div>
+                  <div className="profile-list" onClick={handleMyBookingsClick}>
+                    My Bookings
+                  </div>
+                  <div className="profile-list" onClick={handleMyPackagesClick}>
+                    My Packages
+                  </div>
+                  <div className="profile-list" onClick={handleLogoutClick}>
+                    <FontAwesomeIcon
+                      icon={faSignOutAlt}
+                      className="logout-icon"
+                    />
+                    Log Out
+                  </div>
                 </div>
               )}
             </div>
@@ -326,7 +338,7 @@ const Header = ({ children }) => {
           <div className="s-h-s">
             <div className="location">
               <img
-                src={location}
+                src={locationIcon}
                 alt="location-icon"
                 onClick={handleLocationIconClick}
               />
@@ -351,7 +363,7 @@ const Header = ({ children }) => {
               </div>
             </div>
             <div className="search-header">
-              <img src={search} alt="search-icon" className="search-icon" />
+              <img src={searchIcon} alt="search-icon" className="search-icon" />
               <div className="service-search-container">
                 <input
                   placeholder={`search for a service ex:${placeholder}`}
@@ -379,13 +391,87 @@ const Header = ({ children }) => {
         </div>
       </div>
 
+      {/* Mobile header */}
+      <div className="mobile-container">
+        <div className="topnav">
+          <img
+            src={logo}
+            alt="logo"
+            className="main-logo"
+            onClick={() => navigate("/")}
+          />
+          <a
+            href="javascript:void(0);"
+            className="icon"
+            onClick={handleProfileClick}
+          >
+            <FaBars />
+          </a>
+        </div>
+
+        {isProfileMenuVisible && (
+          <div id="myLinks" className={isMenuOpen ? "show" : ""}>
+            <a
+              onClick={() => {
+                navigate("/userprofile");
+                setIsMenuOpen(false);
+                setProfileMenuVisible(false);
+              }}
+            >
+              My account
+            </a>
+            <a
+              onClick={() => {
+                handleMyBookingsClick();
+                setIsMenuOpen(false);
+                setProfileMenuVisible(false);
+              }}
+            >
+              My bookings
+            </a>
+            <a
+              onClick={() => {
+                handleMyAddressesClick();
+                setIsMenuOpen(false);
+                setProfileMenuVisible(false);
+              }}
+            >
+              My addresses
+            </a>
+            <a
+              onClick={() => {
+                handleMyPackagesClick();
+                setIsMenuOpen(false);
+                setProfileMenuVisible(false);
+              }}
+            >
+              My packages
+            </a>
+            <a
+              onClick={() => {
+                handleLogoutClick();
+                setIsMenuOpen(false);
+                setProfileMenuVisible(false);
+              }}
+            >
+              Logout
+            </a>
+          </div>
+        )}
+      </div>
+
       {isLoginVisible && (
         <div className="modalOverlay" onClick={closeModal}>
           <div className="modalContent" onClick={(e) => e.stopPropagation()}>
             <button className="close-button" onClick={closeModal}>
               &times;
             </button>
-            <LoginComponent onLoginSuccess={() => setLoginVisible(false)} />
+            <LoginComponent
+              onLoginSuccess={() => {
+                closeModal();
+                setProfileMenuVisible(true);
+              }}
+            />
           </div>
         </div>
       )}

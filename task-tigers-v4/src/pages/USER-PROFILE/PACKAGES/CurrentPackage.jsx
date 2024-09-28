@@ -4,7 +4,6 @@ import "./CurrentPackage.css"; // Add styles for your current package card
 import { useAuth } from "../../../context/AuthContext"; // Import useAuth
 
 const CurrentPackage = ({ userId }) => {
-  console.log("the current userId", userId);
   const [currentPackage, setCurrentPackage] = useState(null); // Store the user's current package
   const [loading, setLoading] = useState(false); // Track loading state
   const { setHasMembership } = useAuth(); // Access setHasMembership from AuthContext
@@ -21,31 +20,23 @@ const CurrentPackage = ({ userId }) => {
         );
         const data = await response.json();
 
-        console.log("API response data from current packages:", data); // Log API response for debugging
-
-        // Handle case when data is an object or array
         if (response.ok) {
           if (Array.isArray(data) && data.length > 0) {
-            console.log("Setting the current package from array:", data[0]);
             setCurrentPackage(data[0]); // If API returns an array, use the first item
             setHasMembership(new Date(data[0].expiryDate) > new Date()); // Update hasMembership based on expiry date
           } else if (data && typeof data === "object" && data._id) {
-            console.log("Setting the current package from object:", data);
             setCurrentPackage(data); // If API returns a single object, use it
             setHasMembership(new Date(data.expiryDate) > new Date()); // Update hasMembership based on expiry date
           } else {
-            console.log("No valid package data found.");
             setCurrentPackage(null); // No package found
             setHasMembership(false); // Set hasMembership to false
           }
         } else {
-          console.error("Error in API response:", data);
           setCurrentPackage(null);
           setHasMembership(false); // Set hasMembership to false
           toast.error("Failed to fetch current package.");
         }
       } catch (err) {
-        console.error("Error fetching package:", err);
         setCurrentPackage(null);
         setHasMembership(false); // Set hasMembership to false
         toast.error("Failed to fetch current package.");
@@ -60,6 +51,11 @@ const CurrentPackage = ({ userId }) => {
   if (loading) {
     return <p>Loading current package...</p>;
   }
+
+  // Determine if the package is expired
+  const isExpired = currentPackage
+    ? new Date(currentPackage.expiryDate) <= new Date()
+    : true;
 
   return (
     <div className="current-package-container">
@@ -86,14 +82,14 @@ const CurrentPackage = ({ userId }) => {
               <strong>Expiry Date:</strong>{" "}
               {new Date(currentPackage.expiryDate).toLocaleDateString()}
             </p>
-            <p className="package-status">
+            <p className={`package-status ${isExpired ? "expired" : "active"}`}>
               <strong>Status:</strong>{" "}
-              {new Date(currentPackage.expiryDate) > new Date()
-                ? `${Math.ceil(
+              {isExpired
+                ? "Expired"
+                : `${Math.ceil(
                     (new Date(currentPackage.expiryDate) - new Date()) /
                       (1000 * 60 * 60 * 24),
-                  )} day(s) left`
-                : "Expired"}
+                  )} day(s) left`}
             </p>
           </div>
         </div>

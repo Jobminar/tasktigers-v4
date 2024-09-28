@@ -2,27 +2,35 @@
     display: flex;
     flex-direction: column;
     gap: 15px;
-    padding: 50px;
+    padding: 30px;
+    /* Reduced padding */
     font-family: Roboto, sans-serif;
 }
 
 .bookings-title {
     font-weight: 500;
     margin-left: 3rem;
+    font-size: 1.5rem;
+    /* Adjusted to scale down */
 }
 
 .order-card {
     background-color: #fff;
-    border: 3px solid #000000;
-    border-radius: 40px;
-    padding: 15px 80px;
+    border: 2px solid #000000;
+    /* Thinner border */
+    border-radius: 30px;
+    /* Slightly less rounded */
+    padding: 10px 60px;
+    /* Reduced padding */
     width: 80%;
     display: flex;
     flex-direction: column;
-    gap: 10px;
-    margin-left: 5rem;
-    margin-left: 5rem;
-    margin-bottom: 3rem
+    gap: 8px;
+    /* Reduced gap */
+    margin-left: 4rem;
+    /* Reduced margin */
+    margin-bottom: 2rem;
+    /* Reduced margin */
 }
 
 .order-card-header {
@@ -31,14 +39,15 @@
     align-items: flex-start;
     position: relative;
     padding-bottom: 0px;
-    /* Ensure there's enough space for the date */
-    min-height: 60px;
-    /* Adjust based on content size */
+    min-height: 45px;
+    /* Reduced min-height */
 }
 
 .order-card-header h3 {
     margin: 0;
     color: #333;
+    font-size: 1.5rem;
+    /* Adjusted to scale down */
 }
 
 .order-card-header .time {
@@ -48,35 +57,26 @@
     position: absolute;
     top: 0;
     right: 0;
-
+    font-size: 1.5rem;
+    /* Adjusted to scale down */
 }
 
-/* .bookings-date {
-    margin: 0;
-    color: #666;
-    font-weight: bold;
-    position: absolute;
-    bottom: 0;
-    right: 0;
-    background-color: transparent;
-} */
-
 .icon {
-    width: 50px;
-    height: 50px;
-    margin-right: 10px;
+    width: 38px;
+    /* Scaled down */
+    height: 38px;
+    /* Scaled down */
+    margin-right: 8px;
     vertical-align: middle;
 }
 
-
-
-
 .order-card-body p {
     font-weight: 400;
-    font-size: 2.5rem;
-    margin: 5px 0;
+    font-size: 1.875rem;
+    /* 25% smaller than 2.5rem */
+    margin: 4px 0;
+    /* Reduced margin */
     color: #000000;
-
 }
 
 .order-card-body p:last-child {
@@ -88,7 +88,8 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 10px 0;
+    padding: 8px 0;
+    /* Reduced padding */
 }
 
 .order-card-body p {
@@ -106,33 +107,42 @@
     text-align: right;
     font-weight: 400;
     color: #000000;
+    font-size: 1.5rem;
+    /* Adjusted to scale down */
 }
 
 #selected-time {
-    margin-top: 2rem;
+    margin-top: 1.5rem;
+    /* Reduced margin */
     margin-bottom: 0;
     font-weight: 500;
-    font-size: 2.5rem;
+    font-size: 1.875rem;
+    /* 25% smaller than 2.5rem */
 }
 
 #booking-day {
-    font-size: 2rem;
-    margin-bottom: 5.5rem;
+    font-size: 1.5rem;
+    /* Adjusted to scale down */
+    margin-bottom: 4rem;
+    /* Reduced margin */
     font-weight: 450;
 }
 
-
 .pricing-details {
-    color: #000000
+    color: #000000;
 }
 
 #jobs-pricing {
     color: #000000;
-    margin-bottom: 2rem;
+    margin-bottom: 1.5rem;
+    /* Reduced margin */
     font-weight: 400;
+    font-size: 1.5rem;
+    /* Adjusted to scale down */
 }
 
 #booking-name {
     font-weight: 500;
-    font-size: 3rem;
+    font-size: 2.25rem;
+    /* 25% smaller than 3rem */
 }

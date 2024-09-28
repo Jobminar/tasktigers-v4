@@ -1,68 +1,146 @@
+/* File: BookingDetails.css */
 .booking-details-container {
-    padding: 20px;
     max-width: 800px;
-    margin: 0 auto;
+    margin: 1rem auto;
+    padding: 20px;
     font-family: 'Roboto', sans-serif;
+    color: #333;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
 }
 
-.booking-details-header {
+.booking-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 20px;
 }
 
-.booking-details-header h1 {
-    margin: 0;
-    font-size: 24px;
+.booking-header h1 {
+    font-size: 2rem;
+    font-weight: bold;
 }
 
-.booking-details-header p {
-    margin: 0;
-    font-size: 14px;
-    color: #555;
+
+#booking-detail-location {
+    display: flex;
+    justify-content: start;
 }
 
 .help-button {
-    background-color: #ccc;
+    padding: 10px 20px;
+    background-color: #bcbcbc;
+    color: rgb(0, 0, 0);
     border: none;
-    padding: 5px 10px;
     border-radius: 5px;
     cursor: pointer;
+    font-weight: bold;
 }
 
-.customer-details {
+.booking-time {
+    font-size: 1.2rem;
+    margin-top: 5px;
     margin-bottom: 20px;
 }
 
-.location-box {
-    border: 1px solid #ddd;
-    padding: 10px;
-    border-radius: 5px;
+.customer-details {
+    margin-top: 20px;
 }
 
-.location-box p {
-    margin: 5px 0;
+.customer-details h2 {
+    font-size: 1.5rem;
+    margin-bottom: 15px;
+    font-weight: bold;
+    border-bottom: 1px dashed #ddd;
+    padding-bottom: 5px;
 }
 
-.job-details {
+.location-card {
+    border: 1px solid #303030;
+    border-radius: 8px;
+    padding: 15px;
+    margin-top: 10px;
+    background-color: #f9f9f9;
+}
+
+.location-card h3 {
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+.location-card p {
+    font-size: 1rem;
+    line-height: 1.5;
+}
+
+.job-timings {
     display: flex;
     justify-content: space-between;
-    margin-top: 10px;
+    margin-top: 15px;
 }
 
-.summary {
-    margin-top: 20px;
+.job-timings p {
+    margin: 0;
+    font-size: 1rem;
+}
+
+.summary-section {
+    margin-top: 30px;
+}
+
+.summary-section h2 {
+    font-size: 1.5rem;
+    margin-bottom: 15px;
+    font-weight: bold;
+    border-bottom: 1px dashed #ddd;
+    padding-bottom: 5px;
 }
 
 .summary-item {
     display: flex;
     justify-content: space-between;
-    margin-bottom: 10px;
+    margin: 0 5rem;
+    /* Reduce the gap to decrease the space between items */
+    border-bottom: 1px dashed #ddd;
+    padding: 5px 0;
+    /* You can also adjust padding to decrease overall space */
 }
 
-.summary-item.total {
+
+.summary-container {
+    border: 1px solid rgb(51, 51, 51);
+    border-radius: 10px;
+    padding: 10px
+}
+
+.item-description p {
+    margin: 0;
+    font-size: 1rem;
+}
+
+.booking-item-price {
     font-weight: bold;
-    border-top: 1px solid #ddd;
-    padding-top: 10px;
+    font-size: 1.2rem;
+}
+
+.other-charges,
+.total-value {
+    display: flex;
+    justify-content: space-between;
+    gap: 5px;
+    margin: 0 5rem;
+    padding: 15px 0;
+}
+
+.total-value {
+    font-weight: bold;
+    font-size: 1.3rem;
+    border-top: 1px dashed #ddd;
+}
+
+.other-charges p,
+.total-value p {
+    margin: 0;
 }
